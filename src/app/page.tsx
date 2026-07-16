@@ -4,6 +4,15 @@ import { FormEvent, useState } from "react";
 
 type Product = { name: string; category: string; price: string; stock: string; image: string; description: string };
 
+function CustomerStore({ products, onAdmin }: { products: Product[]; onAdmin: () => void }) {
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("Все");
+  const [cart, setCart] = useState<Product[]>([]);
+  const categories = ["Все", "Мужские", "Женские", "Унисекс"];
+  const visible = products.filter((product) => (category === "Все" || product.category === category) && product.name.toLowerCase().includes(query.toLowerCase()));
+  return <main className="min-h-screen bg-[#f7f7f5] text-[#171717]"><nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-10"><a className="text-xl font-black tracking-[-0.06em]" href="#">SOLE / STORE</a><div className="hidden items-center gap-8 text-sm font-medium md:flex"><a href="#shop">Новинки</a><a href="#shop">Кроссовки</a><a href="#shop">Одежда</a><a href="#shop">Аксессуары</a></div><div className="flex items-center gap-3"><button onClick={onAdmin} className="rounded-full border border-[#d9d9d4] px-4 py-2 text-xs font-semibold transition hover:bg-[#171717] hover:text-white">Войти как админ</button><button className="relative rounded-full bg-[#171717] px-4 py-2 text-xs font-semibold text-white">Корзина {cart.length > 0 && <span className="ml-1 rounded-full bg-white px-1.5 text-[#171717]">{cart.length}</span>}</button></div></nav><section className="mx-auto max-w-7xl px-6 pb-20 pt-10 lg:px-10"><div className="grid items-end gap-10 border-b border-[#deded8] pb-14 lg:grid-cols-[1.1fr_.9fr]"><div><p className="text-xs font-bold uppercase tracking-[0.25em] text-[#73736d]">Весна / Лето 2025</p><h1 className="mt-5 max-w-2xl text-6xl font-black leading-[0.9] tracking-[-0.07em] sm:text-8xl">Двигайся<br /><span className="text-[#5b5ce2]">по-своему.</span></h1><p className="mt-7 max-w-md text-base leading-7 text-[#666660]">Культовые силуэты, новые технологии и вещи, которые хочется носить каждый день.</p><a href="#shop" className="mt-8 inline-flex rounded-full bg-[#5b5ce2] px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-[#4647c9]">Смотреть коллекцию →</a></div><div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-[#dfe2f5]"><img src="https://images.unsplash.com/photo-1554137530-7f6c0a0e8f8f?auto=format&fit=crop&w=1200&q=85" alt="Новая коллекция кроссовок" className="h-full w-full object-cover mix-blend-multiply" /><span className="absolute bottom-5 left-5 rounded-full bg-white/85 px-4 py-2 text-xs font-semibold">SOLE EDIT / 001</span></div></div><div id="shop" className="mt-14 flex flex-col justify-between gap-5 sm:flex-row sm:items-center"><div className="flex gap-2 overflow-x-auto">{categories.map((item) => <button key={item} onClick={() => setCategory(item)} className={`whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition ${category === item ? "bg-[#171717] text-white" : "bg-white text-[#73736d] hover:bg-[#e9e9e3]"}`}>{item}</button>)}</div><label className="flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm text-[#73736d]">⌕<input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Поиск модели" className="w-36 bg-transparent outline-none" /></label></div><div className="mt-8 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">{visible.map((product) => <article key={product.name} className="group"><div className="relative aspect-[.9] overflow-hidden rounded-2xl bg-[#ecece8]"><img src={product.image} alt={product.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><button onClick={() => setCart((items) => [...items, product])} className="absolute bottom-3 left-3 right-3 translate-y-2 rounded-xl bg-white/95 py-3 text-sm font-bold opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100">Добавить в корзину +</button><span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-[11px] font-bold">Новинка</span></div><div className="mt-4 flex justify-between gap-3"><div><h2 className="font-bold">{product.name}</h2><p className="mt-1 text-sm text-[#7b7b74]">{product.category} · {product.description}</p></div><strong className="whitespace-nowrap text-sm">{product.price}</strong></div></article>)}</div>{visible.length === 0 && <p className="py-20 text-center text-[#73736d]">Модели не найдены. Попробуйте другой запрос.</p>}</section><footer className="bg-[#171717] px-6 py-10 text-white lg:px-10"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-5 sm:flex-row"><span className="text-xl font-black tracking-[-0.06em]">SOLE / STORE</span><span className="text-sm text-white/50">Бесплатная доставка от ₽ 10 000 · Возврат 30 дней</span></div></footer></main>;
+}
+
 const initialProducts: Product[] = [
   { name: "Nike Air Max Pulse", category: "Мужские", price: "₽ 14 990", stock: "24 шт.", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85", description: "Лёгкая модель с мягкой амортизацией для ритма большого города." },
   { name: "Adidas Forum Low", category: "Унисекс", price: "₽ 11 490", stock: "18 шт.", image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=900&q=85", description: "Иконичный силуэт 80-х, кожаные панели и удобная посадка." },
@@ -18,6 +27,9 @@ const initialProducts: Product[] = [
 export default function Home() {
   const [products, setProducts] = useState(initialProducts);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [mode, setMode] = useState<"store" | "admin">("store");
+
+  if (mode === "store") return <CustomerStore products={products} onAdmin={() => setMode("admin")} />;
 
   function addProduct(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -38,7 +50,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#f5f7fb] text-[#172033]">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-7 lg:px-8">
         <a className="text-lg font-bold tracking-tight" href="#">SOLE / STORE</a>
-        <div className="flex items-center gap-6 text-sm text-[#64748b]"><a href="#catalog">Каталог</a><a href="#orders">Заказы</a><button className="rounded-full border border-[#dbe1eb] bg-white px-5 py-2.5 font-semibold text-[#172033]">Выйти</button></div>
+        <div className="flex items-center gap-6 text-sm text-[#64748b]"><a href="#catalog">Каталог</a><a href="#orders">Заказы</a><button onClick={() => setMode("store")} className="rounded-full border border-[#dbe1eb] bg-white px-5 py-2.5 font-semibold text-[#172033]">В магазин</button></div>
       </nav>
 
       <section className="mx-auto max-w-6xl px-6 pb-20 pt-10 lg:px-8">
